@@ -14,6 +14,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        /* Animasi smooth transisi perpindahan daftar tugas */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-emerald-50 via-teal-50 to-green-100 min-h-screen text-slate-800 flex flex-col justify-between relative overflow-x-hidden">
@@ -177,22 +185,22 @@
             <!-- Kolom Daftar Tugas -->
             <div class="lg:col-span-2 space-y-6">
                 
-                <!-- Statistik & Filter Bar -->
+                <!-- Statistik & Filter Bar (Dengan Animasi Transisi Smooth pada Tombol) -->
                 <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl shadow-emerald-900/5 border border-emerald-100 p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div class="flex items-center gap-3">
                         <div class="bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-xl font-bold text-sm" id="statTotal">0 Total</div>
                         <div class="bg-teal-50 text-teal-700 px-3 py-1.5 rounded-xl font-bold text-sm" id="statSelesai">0 Selesai</div>
                     </div>
                     
-                    <!-- Tombol Filter -->
+                    <!-- Tombol Filter dengan Transisi Geser Halus -->
                     <div class="flex bg-slate-100 p-1 rounded-xl w-full sm:w-auto">
-                        <button onclick="ubahFilter('semua')" id="btnFilterSemua" class="flex-1 sm:flex-none px-4 py-1.5 text-xs font-semibold rounded-lg bg-white text-emerald-700 shadow-sm transition">Semua</button>
-                        <button onclick="ubahFilter('belum')" id="btnFilterBelum" class="flex-1 sm:flex-none px-4 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Belum</button>
-                        <button onclick="ubahFilter('selesai')" id="btnFilterSelesai" class="flex-1 sm:flex-none px-4 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Selesai</button>
+                        <button onclick="ubahFilter('semua')" id="btnFilterSemua" class="flex-1 sm:flex-none px-4 py-1.5 text-xs font-semibold rounded-lg bg-white text-emerald-700 shadow-sm transition-all duration-300 ease-in-out">Semua</button>
+                        <button onclick="ubahFilter('belum')" id="btnFilterBelum" class="flex-1 sm:flex-none px-4 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all duration-300 ease-in-out">Belum</button>
+                        <button onclick="ubahFilter('selesai')" id="btnFilterSelesai" class="flex-1 sm:flex-none px-4 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all duration-300 ease-in-out">Selesai</button>
                     </div>
                 </div>
 
-                <!-- List Kontainer Tugas -->
+                <!-- List Kontainer Tugas (Dilengkapi Efek Animasi Geser Smooth) -->
                 <div id="daftarTugasContainer" class="space-y-4">
                     <!-- Tugas dimuat dinamis -->
                 </div>
@@ -501,9 +509,12 @@
             }
         }
 
-        // Render Tampilan ke Layar
+        // Render Tampilan ke Layar dengan Efek Animasi Smooth
         function renderTugas() {
             daftarTugasContainer.innerHTML = '';
+            // Tambahkan kelas animasi fade-in pada container daftar tugas
+            daftarTugasContainer.classList.add('animate-fade-in');
+            setTimeout(() => daftarTugasContainer.classList.remove('animate-fade-in'), 300);
 
             const total = daftarTugas.length;
             const selesai = daftarTugas.filter(t => t.status === 1).length;
@@ -518,7 +529,7 @@
 
             if (tugasDitampilkan.length === 0) {
                 daftarTugasContainer.innerHTML = `
-                    <div class="bg-white/90 backdrop-blur-md rounded-2xl border border-emerald-100 p-12 text-center shadow-xl shadow-emerald-900/5">
+                    <div class="bg-white/90 backdrop-blur-md rounded-2xl border border-emerald-100 p-12 text-center shadow-xl shadow-emerald-900/5 animate-fade-in">
                         <p class="text-slate-500 font-medium text-sm">Belum ada tugas dalam kategori ini.</p>
                     </div>
                 `;
@@ -527,7 +538,7 @@
 
             tugasDitampilkan.forEach((tugas) => {
                 const card = document.createElement('div');
-                card.className = `bg-white/95 backdrop-blur-md rounded-2xl p-5 border transition-all duration-200 shadow-xl shadow-emerald-900/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ${tugas.status === 1 ? 'border-emerald-200 bg-emerald-50/30' : 'border-emerald-100'}`;
+                card.className = `bg-white/95 backdrop-blur-md rounded-2xl p-5 border transition-all duration-200 shadow-xl shadow-emerald-900/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-fade-in ${tugas.status === 1 ? 'border-emerald-200 bg-emerald-50/30' : 'border-emerald-100'}`;
                 
                 card.innerHTML = `
                     <div class="space-y-1.5 flex-1">
@@ -563,9 +574,9 @@
             ['semua', 'belum', 'selesai'].forEach(kat => {
                 const btn = document.getElementById(`btnFilter${kat.charAt(0).toUpperCase() + kat.slice(1)}`);
                 if (kat === kategori) {
-                    btn.className = "flex-1 sm:flex-none px-4 py-1.5 text-xs font-semibold rounded-lg bg-white text-emerald-700 shadow-sm transition";
+                    btn.className = "flex-1 sm:flex-none px-4 py-1.5 text-xs font-semibold rounded-lg bg-white text-emerald-700 shadow-sm transition-all duration-300 ease-in-out";
                 } else {
-                    btn.className = "flex-1 sm:flex-none px-4 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition";
+                    btn.className = "flex-1 sm:flex-none px-4 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all duration-300 ease-in-out";
                 }
             });
             renderTugas();
